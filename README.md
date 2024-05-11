@@ -2,7 +2,7 @@
 
 > A MacOS mouse automation module to simulate mouse operations programmatically.
 
-[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](https://github.com/mathieuschimmerling/mouse-macos)
+[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](https://github.com/matschik/mouse-macos)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This module provides a simple API to control the mouse, allowing you to perform actions like click, press, release, set position, and get position on MacOS.
