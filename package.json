@@ -1,0 +1,17 @@
+{
+  "name": "mouse-macos",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "cmake-js clean && cmake-js build",
+    "prepublish": "pnpm build"
+  },
+  "keywords": ["mouse", "automation"],
+  "author": "Mathieu Schimmerling <mathieu.schimmerling@protonmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "cmake-js": "^7.3.0"
+  }
+}
