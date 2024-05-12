@@ -54,51 +54,86 @@ napi_value GetMousePosition(napi_env env, napi_callback_info info)
     // return nullptr;
 }
 
-// Simulate a mouse click
-napi_value MouseClick(napi_env env, napi_callback_info info)
+// Utility function to determine mouse button and event types
+void GetButtonAndEventType(int32_t buttonIndex, CGMouseButton *mouseButton, CGEventType *mouseDownType, CGEventType *mouseUpType)
 {
-    // Get the current mouse location
-    CGPoint currentPoint = CGEventGetLocation(CGEventCreate(NULL));
-
-    // Create and post a mouse down event
-    CGEventRef clickDown = CGEventCreateMouseEvent(
-        NULL, kCGEventLeftMouseDown, currentPoint, kCGMouseButtonLeft);
-    CGEventPost(kCGHIDEventTap, clickDown);
-    CFRelease(clickDown);
-
-    CGPoint currentPoint2 = CGEventGetLocation(CGEventCreate(NULL));
-
-    // Create and post a mouse up event
-    CGEventRef clickUp = CGEventCreateMouseEvent(
-        NULL, kCGEventLeftMouseUp, currentPoint2, kCGMouseButtonLeft);
-    CGEventPost(kCGHIDEventTap, clickUp);
-    CFRelease(clickUp);
-
-    return nullptr;
+    switch(buttonIndex) {
+        case 1: // Right button
+            *mouseButton = kCGMouseButtonRight;
+            *mouseDownType = kCGEventRightMouseDown;
+            *mouseUpType = kCGEventRightMouseUp;
+            break;
+        case 2: // Middle button
+            *mouseButton = kCGMouseButtonCenter;
+            *mouseDownType = kCGEventOtherMouseDown;
+            *mouseUpType = kCGEventOtherMouseUp;
+            break;
+        default: // Left button or any other value
+            *mouseButton = kCGMouseButtonLeft;
+            *mouseDownType = kCGEventLeftMouseDown;
+            *mouseUpType = kCGEventLeftMouseUp;
+            break;
+    }
 }
 
-// Separate press and release functions
-napi_value MousePress(napi_env env, napi_callback_info info)
+void GetInputButton(napi_env env, napi_callback_info info, int32_t *button)
+{
+    size_t argc = 1;
+    napi_value args[1];
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+
+    if (argc > 0) {
+        napi_get_value_int32(env, args[0], button);
+    }
+}
+
+// Helper function to create and post mouse events
+void PostMouseEvent(CGEventType eventType, CGMouseButton button)
 {
     CGPoint currentPoint = CGEventGetLocation(CGEventCreate(NULL));
+    CGEventRef event = CGEventCreateMouseEvent(
+        NULL, eventType, currentPoint, button);
+    CGEventPost(kCGHIDEventTap, event);
+    CFRelease(event);
+}
 
-    CGEventRef pressEvent = CGEventCreateMouseEvent(
-        NULL, kCGEventLeftMouseDown, currentPoint, kCGMouseButtonLeft);
-    CGEventPost(kCGHIDEventTap, pressEvent);
-    CFRelease(pressEvent);
+napi_value MousePress(napi_env env, napi_callback_info info)
+{
+    int32_t button = 0;
+    GetInputButton(env, info, &button);
 
+    CGMouseButton mouseButton;
+    CGEventType mouseDownType, mouseUpType;
+    GetButtonAndEventType(button, &mouseButton, &mouseDownType, &mouseUpType);
+
+    PostMouseEvent(mouseDownType, mouseButton);
     return nullptr;
 }
 
 napi_value MouseRelease(napi_env env, napi_callback_info info)
 {
-    CGPoint currentPoint = CGEventGetLocation(CGEventCreate(NULL));
+    int32_t button = 0;
+    GetInputButton(env, info, &button);
 
-    CGEventRef releaseEvent = CGEventCreateMouseEvent(
-        NULL, kCGEventLeftMouseUp, currentPoint, kCGMouseButtonLeft);
-    CGEventPost(kCGHIDEventTap, releaseEvent);
-    CFRelease(releaseEvent);
+    CGMouseButton mouseButton;
+    CGEventType mouseDownType, mouseUpType;
+    GetButtonAndEventType(button, &mouseButton, &mouseDownType, &mouseUpType);
 
+    PostMouseEvent(mouseUpType, mouseButton);
+    return nullptr;
+}
+
+napi_value MouseClick(napi_env env, napi_callback_info info)
+{
+    int32_t button = 0;
+    GetInputButton(env, info, &button);
+
+    CGMouseButton mouseButton;
+    CGEventType mouseDownType, mouseUpType;
+    GetButtonAndEventType(button, &mouseButton, &mouseDownType, &mouseUpType);
+
+    PostMouseEvent(mouseDownType, mouseButton);
+    PostMouseEvent(mouseUpType, mouseButton);
     return nullptr;
 }
 

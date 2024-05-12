@@ -6,17 +6,14 @@ async function osDelay(cb) {
 }
 
 const mouse = {
-  click() {
-    return osDelay(addon.mouseClick);
+  click(mouseButton) {
+    return osDelay(() => addon.mouseClick(mouseButton));
   },
-  press() {
-    return osDelay(addon.mousePress);
+  press(mouseButton) {
+    return osDelay(() => addon.mousePress(mouseButton));
   },
-  release() {
-    return osDelay(addon.mouseRelease);
-  },
-  click() {
-    return osDelay(addon.mouseClick);
+  release(mouseButton) {
+    return osDelay(() => addon.mouseRelease(mouseButton));
   },
   setPosition(x, y) {
     addon.setMousePosition(x, y);
@@ -24,9 +21,9 @@ const mouse = {
   getPosition() {
     return addon.getMousePosition();
   },
-  clickOnPosition(x, y) {
+  clickOnPosition(x, y, mouseButton) {
     this.setPosition(x, y);
-    this.click();
+    this.click(mouseButton);
   },
 };
 
