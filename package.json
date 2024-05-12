@@ -1,13 +1,20 @@
 {
   "name": "mouse-macos",
-  "version": "0.2.0",
-  "description": "",
+  "version": "0.2.1",
+  "description": "A MacOS mouse automation module to simulate mouse operations programmatically",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "build": "cmake-js clean && cmake-js build",
     "prepublish": "pnpm build"
   },
+  "files": [
+    "build/**/*",
+    "src/**/*",
+    "addon.cjs",
+    "index.js",
+    "README.md"
+  ],
   "keywords": ["mouse", "automation"],
   "author": "Mathieu Schimmerling <mathieu.schimmerling@protonmail.com>",
   "license": "MIT",
